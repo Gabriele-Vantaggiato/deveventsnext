@@ -35,8 +35,8 @@ export default function RootLayout({
             raysOrigin="top-center-offset"
             raysColor="#5dfeca"
             raysSpeed={0.4}
-            lightSpread={0.9}
-            rayLength={5}
+            lightSpread={4}
+            rayLength={20}
             pulsating={true}
             fadeDistance={0.7}
             saturation={1.3}
