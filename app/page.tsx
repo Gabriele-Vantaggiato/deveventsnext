@@ -12,7 +12,7 @@ const Page = () => {
         <h3>Featured Events</h3>
         <ul className="events">
           {events.map((event) => (
-            <li key={event.title}> 
+            <li key={event.title}>
               <EventCard {...event}></EventCard>
             </li>
           ))}
