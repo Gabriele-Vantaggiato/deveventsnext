@@ -1,4 +1,5 @@
 import mongoose, { Document, Model, Schema } from "mongoose";
+import { parse, isValid, format } from 'date-fns';
 
 // TypeScript interface for Event document
 export interface IEvent extends Document {
@@ -137,13 +138,13 @@ eventSchema.pre("save", async function (next) {
   // Normalize date to ISO format if modified
   if (event.isModified("date")) {
     try {
-      const parsedDate = new Date(event.date);
-      if (isNaN(parsedDate.getTime())) {
-        throw new Error("Invalid date format");
+      const parsedDate = parse(event.date, 'yyyy-MM-dd', new Date());
+      if (!isValid(parsedDate)) {
+        throw new Error("Invalid date format. Date must be in YYYY-MM-DD format.");
       }
-      event.date = parsedDate.toISOString().split("T")[0]; // Store as YYYY-MM-DD
+      event.date = format(parsedDate, 'yyyy-MM-dd');
     } catch (error) {
-      return next(new Error("Date must be a valid date string"));
+      return next(new Error("Date must be a valid date string in YYYY-MM-DD format"));
     }
   }
 
