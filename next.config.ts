@@ -2,6 +2,14 @@ import type { NextConfig } from "next";
 import { withPostHogConfig } from "@posthog/nextjs-config";
 
 const nextConfig: NextConfig = {
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'res.cloudinary.com',
+      }
+    ]
+  },
   cacheComponents: true,
   reactCompiler: true,
   /* config options here */

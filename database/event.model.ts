@@ -110,7 +110,7 @@ const eventSchema = new Schema<IEvent>(
 eventSchema.index({ slug: 1 }, { unique: true });
 
 // Pre-save hook for slug generation, date normalization, and validation
-eventSchema.pre("save", async function (next) {
+eventSchema.pre("save", async function () {
   const event = this as IEvent;
 
   // Generate slug only if title is new or modified
@@ -137,15 +137,11 @@ eventSchema.pre("save", async function (next) {
 
   // Normalize date to ISO format if modified
   if (event.isModified("date")) {
-    try {
-      const parsedDate = parse(event.date, 'yyyy-MM-dd', new Date());
-      if (!isValid(parsedDate)) {
-        throw new Error("Invalid date format. Date must be in YYYY-MM-DD format.");
-      }
-      event.date = format(parsedDate, 'yyyy-MM-dd');
-    } catch (error) {
-      return next(new Error("Date must be a valid date string in YYYY-MM-DD format"));
+    const parsedDate = parse(event.date, 'yyyy-MM-dd', new Date());
+    if (!isValid(parsedDate)) {
+      throw new Error("Invalid date format. Date must be in YYYY-MM-DD format.");
     }
+    event.date = format(parsedDate, 'yyyy-MM-dd');
   }
 
   // Normalize time to consistent format (HH:MM) if modified
@@ -154,7 +150,7 @@ eventSchema.pre("save", async function (next) {
     const timeRegex12h = /^(0?[1-9]|1[0-2]):[0-5][0-9]\s?(AM|PM|am|pm)$/;
 
     if (!timeRegex.test(event.time) && !timeRegex12h.test(event.time)) {
-      return next(new Error("Time must be in HH:MM or HH:MM AM/PM format"));
+      throw new Error("Time must be in HH:MM or HH:MM AM/PM format");
     }
 
     // Normalize 12-hour format to 24-hour format
@@ -175,8 +171,6 @@ eventSchema.pre("save", async function (next) {
       }
     }
   }
-
-  next();
 });
 
 // Create and export the Event model
